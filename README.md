@@ -4,7 +4,7 @@ An interactive web-based simulator that demonstrates how IPv4 packets are fragme
 
 ## 🌐 Live Demo
 
-**[Open IPv4 Fragmentation Simulator](https://YOUR-GITHUB-USERNAME.github.io/ipv4-fragmentation-simulator/)**
+**[Open IPv4 Fragmentation Simulator]([https://YOUR-GITHUB-USERNAME.github.io/ipv4-fragmentation-simulator/](https://dynamitepranay.github.io/ipv4-fragmentation-simulator/))**
 
 > Replace `YOUR-GITHUB-USERNAME` with your actual GitHub username after enabling GitHub Pages.
 
