@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPv4 Fragmentation Simulator | Educational Networking Tool</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+              <line x1="6" y1="6" x2="6.01" y2="6"></line>
+              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+          </div>
+          <div>
+            <h1>IPv4 Fragmentation Simulator</h1>
+            <p class="subtitle">Interactive Computer Networks Learning Module &bull; RFC 791</p>
+          </div>
+        </div>
+        <div class="header-badge" title="Standard assumption for default calculations">
+          <span class="badge-dot"></span>
+          <span>Header: <strong>20 Bytes</strong> (IPv4 Default)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-layout">
+      <!-- Input & Controls Section -->
+      <section class="card control-card">
+        <div class="card-header">
+          <h2>Simulation Parameters</h2>
+          <span class="card-subtitle">Configure packet parameters or choose a standard test preset</span>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="presets-section">
+          <label class="section-label">Quick Scenarios / Presets:</label>
+          <div class="preset-buttons">
+            <button type="button" class="btn-preset active" data-packet="4000" data-mtu="1500" id="preset-classic">
+              <span class="preset-tag">Classic</span>
+              <strong>4000 B</strong> on <strong>1500 B</strong> MTU
+            </button>
+            <button type="button" class="btn-preset" data-packet="1000" data-mtu="1500" id="preset-fit">
+              <span class="preset-tag success">No Frag</span>
+              <strong>1000 B</strong> on <strong>1500 B</strong> MTU
+            </button>
+            <button type="button" class="btn-preset" data-packet="5000" data-mtu="576" id="preset-wan">
+              <span class="preset-tag warning">Dial-up/WAN</span>
+              <strong>5000 B</strong> on <strong>576 B</strong> MTU
+            </button>
+            <button type="button" class="btn-preset" data-packet="1500" data-mtu="625" id="preset-uneven">
+              <span class="preset-tag info">8-Byte Alignment</span>
+              <strong>1500 B</strong> on <strong>625 B</strong> MTU
+            </button>
+            <button type="button" class="btn-preset danger-preset" data-packet="20" data-mtu="1500" id="preset-invalid">
+              <span class="preset-tag danger">Invalid</span>
+              Invalid Input Test
+            </button>
+          </div>
+        </div>
+
+        <!-- Input Form -->
+        <form id="fragmentation-form" novalidate>
+          <div class="form-grid">
+            <!-- Packet Size Input -->
+            <div class="form-group">
+              <label for="packet-size">
+                Original IPv4 Packet Size
+                <span class="info-tooltip" title="Total length of the IP datagram including the 20-byte IP header">&#9432;</span>
+              </label>
+              <div class="input-wrapper">
+                <input 
+                  type="number" 
+                  id="packet-size" 
+                  name="packetSize" 
+                  value="4000" 
+                  min="21" 
+                  max="65535" 
+                  step="1"
+                  required
+                  placeholder="e.g. 4000"
+                >
+                <span class="input-unit">Bytes</span>
+              </div>
+              <p class="field-hint">Range: 21 to 65,535 bytes (Includes 20 B header)</p>
+            </div>
+
+            <!-- MTU Input -->
+            <div class="form-group">
+              <label for="mtu-size">
+                Link MTU (Maximum Transmission Unit)
+                <span class="info-tooltip" title="Max physical layer frame payload size, typically 1500 bytes for standard Ethernet">&#9432;</span>
+              </label>
+              <div class="input-wrapper">
+                <input 
+                  type="number" 
+                  id="mtu-size" 
+                  name="mtuSize" 
+                  value="1500" 
+                  min="28" 
+                  max="65535" 
+                  step="1"
+                  required
+                  placeholder="e.g. 1500"
+                >
+                <span class="input-unit">Bytes</span>
+              </div>
+              <p class="field-hint">Minimum 28 bytes (20 B header + 8 B aligned data)</p>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="btn-simulate">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Simulate Fragmentation
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-reset">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              Reset to Defaults
+            </button>
+          </div>
+        </form>
+
+        <!-- Error Notification Banner -->
+        <div id="error-banner" class="alert alert-error hidden" role="alert" aria-live="assertive">
+          <div class="alert-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="alert-content">
+            <strong id="error-title">Validation Error</strong>
+            <p id="error-message">Please check your inputs and try again.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Output / Results Section -->
+      <section id="results-section" class="results-container">
+        <!-- Status / Verdict Banner -->
+        <div id="verdict-banner" class="verdict-banner">
+          <div class="verdict-icon" id="verdict-icon"></div>
+          <div class="verdict-text">
+            <h3 id="verdict-title">Status Title</h3>
+            <p id="verdict-desc">Detailed explanation of the fragmentation requirement.</p>
+          </div>
+          <div class="verdict-pill" id="verdict-pill">
+            <span id="verdict-count">0</span> Fragments
+          </div>
+        </div>
+
+        <!-- Metrics Overview Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Original Packet</div>
+            <div class="metric-value" id="metric-original-packet">4,000 <span class="metric-unit">B</span></div>
+            <div class="metric-sub" id="metric-original-breakdown">20 B Header + 3,980 B Data</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Link MTU</div>
+            <div class="metric-value" id="metric-mtu">1,500 <span class="metric-unit">B</span></div>
+            <div class="metric-sub">Max link frame size</div>
+          </div>
+
+          <div class="metric-card highlight-metric">
+            <div class="metric-label">Max Payload / Fragment</div>
+            <div class="metric-value" id="metric-max-payload">1,480 <span class="metric-unit">B</span></div>
+            <div class="metric-sub" id="metric-max-payload-formula">&lfloor;(1500 - 20) / 8&rfloor; &times; 8</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Total Fragments</div>
+            <div class="metric-value" id="metric-total-fragments">3</div>
+            <div class="metric-sub" id="metric-overhead">Added Overhead: +40 B</div>
+          </div>
+        </div>
+
+        <!-- Visual Fragmentation Diagram Card -->
+        <div class="card visual-card">
+          <div class="card-header flex-header">
+            <div>
+              <h2>Fragmentation Visual Flow</h2>
+              <span class="card-subtitle">Visual representation of datagram breakdown and packet reconstruction</span>
+            </div>
+            <div class="legend-group">
+              <span class="legend-item"><span class="legend-dot dot-header"></span>IPv4 Header (20 B)</span>
+              <span class="legend-item"><span class="legend-dot dot-payload"></span>Data Payload</span>
+              <span class="legend-item"><span class="legend-dot dot-mf"></span>MF Flag</span>
+            </div>
+          </div>
+
+          <div class="diagram-canvas">
+            <!-- Original Packet Strip -->
+            <div class="diagram-row">
+              <div class="row-label">
+                <span class="label-title">Original Packet</span>
+                <span class="label-badge" id="orig-packet-badge">4000 Bytes</span>
+              </div>
+              <div class="packet-strip-container">
+                <div class="packet-strip orig-strip" id="orig-packet-strip">
+                  <div class="strip-chunk chunk-header" style="flex: 0 0 100px;">
+                    <span class="chunk-title">Header</span>
+                    <span class="chunk-size">20 B</span>
+                  </div>
+                  <div class="strip-chunk chunk-payload" style="flex: 1 1 auto;">
+                    <span class="chunk-title">Original Payload Data</span>
+                    <span class="chunk-size" id="orig-payload-size-label">3980 B (Bytes 0 - 3979)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flow Divider Arrow -->
+            <div class="diagram-divider" id="diagram-divider">
+              <div class="divider-line"></div>
+              <div class="divider-chip" id="divider-chip">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 5v14M19 12l-7 7-7-7"/>
+                </svg>
+                <span>Splitting Payload across fragments (8-byte aligned)</span>
+              </div>
+              <div class="divider-line"></div>
+            </div>
+
+            <!-- Fragments Breakdown Container -->
+            <div class="diagram-row">
+              <div class="row-label">
+                <span class="label-title">Resulting Fragments</span>
+                <span class="label-badge fragment-count-badge" id="frag-count-badge">3 Packets</span>
+              </div>
+              <div class="fragments-visual-list" id="fragments-visual-list">
+                <!-- Dynamically populated fragments -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Fragment Table Card -->
+        <div class="card table-card">
+          <div class="card-header">
+            <h2>Fragment Details Table</h2>
+            <span class="card-subtitle">Exact header and offset values written into each fragment's IPv4 header</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table" id="fragments-table">
+              <thead>
+                <tr>
+                  <th>Fragment #</th>
+                  <th>Header Size</th>
+                  <th>Payload Data</th>
+                  <th>Total Size</th>
+                  <th>Payload Byte Range</th>
+                  <th>
+                    Fragment Offset
+                    <span class="th-sub">(8-byte units)</span>
+                  </th>
+                  <th>
+                    MF Flag
+                    <span class="th-sub">(More Fragments)</span>
+                  </th>
+                  <th>MTU Compliance</th>
+                </tr>
+              </thead>
+              <tbody id="fragments-table-body">
+                <!-- Dynamically populated table rows -->
+              </tbody>
+              <tfoot id="fragments-table-footer">
+                <!-- Dynamically populated summary row -->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Educational Step-by-Step Explanation Card -->
+        <div class="card edu-card">
+          <div class="card-header">
+            <h2>Educational Calculation Breakdown</h2>
+            <span class="card-subtitle">Mathematical derivation following IPv4 RFC 791 principles</span>
+          </div>
+
+          <div class="steps-grid" id="calculation-steps">
+            <!-- Step 1 -->
+            <div class="step-card">
+              <div class="step-num">Step 1</div>
+              <h4>Calculate Original Payload</h4>
+              <p>Subtract the standard 20-byte IPv4 header from the total packet size:</p>
+              <div class="formula-box" id="step1-formula">
+                <code>Payload = Packet Size - 20 = 4000 - 20 = 3,980 Bytes</code>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+              <div class="step-num">Step 2</div>
+              <h4>Max Payload & 8-Byte Alignment</h4>
+              <p>Non-final fragment payloads must be divisible by 8 because the 13-bit Fragment Offset field measures in 8-byte units:</p>
+              <div class="formula-box" id="step2-formula">
+                <code>Max Data = &lfloor;(MTU - 20) / 8&rfloor; &times; 8 = &lfloor;1480 / 8&rfloor; &times; 8 = 1,480 Bytes</code>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+              <div class="step-num">Step 3</div>
+              <h4>Compute Fragment Offsets</h4>
+              <p>The fragment offset indicates where each fragment's payload begins in the original datagram:</p>
+              <div class="formula-box" id="step3-formula">
+                <code>Offset Field = Starting Payload Byte / 8</code>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+              <div class="step-num">Step 4</div>
+              <h4>Set More Fragments (MF) Flag</h4>
+              <p>The 1-bit MF flag informs the destination whether additional fragments are incoming for datagram reassembly:</p>
+              <div class="formula-box" id="step4-formula">
+                <code>MF = 1 (Intermediate fragments) &bull; MF = 0 (Last fragment)</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong>IPv4 Fragmentation Simulator</strong> &bull; Mini-project adhering to IETF RFC 791 standards.</p>
+        <p class="footer-note">Standard 20-byte IPv4 header without options assumed. Non-final fragment payloads strictly conform to 8-byte boundary alignment.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
