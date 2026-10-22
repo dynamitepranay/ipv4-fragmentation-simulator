@@ -1,80 +1,79 @@
 # IPv4 Fragmentation Simulator
 
-An interactive web-based simulator that demonstrates how IPv4 packets are fragmented according to the Maximum Transmission Unit (MTU).
+### An Interactive Computer Networks Mini Project
 
-## 🌐 Live Demo
-
-**[Open IPv4 Fragmentation Simulator]([https://YOUR-GITHUB-USERNAME.github.io/ipv4-fragmentation-simulator/](https://dynamitepranay.github.io/ipv4-fragmentation-simulator/))**
-
-> Replace `YOUR-GITHUB-USERNAME` with your actual GitHub username after enabling GitHub Pages.
+🌐 **Live Website:** [🚀 Open IPv4 Fragmentation Simulator](https://dynamitepranay.github.io/ipv4-fragmentation-simulator/)
 
 ## 📌 About the Project
 
-IPv4 fragmentation divides a large IP packet into smaller fragments when the packet exceeds the MTU supported by a network link.
+The **IPv4 Fragmentation Simulator** is a web-based educational tool designed to demonstrate how IPv4 packets are divided into smaller fragments when their size exceeds the Maximum Transmission Unit (MTU) of a network.
 
-This project visualizes the fragmentation process and calculates fragment payload sizes, total sizes, fragment offsets, and More Fragments (MF) flags.
+The simulator allows users to enter a packet size and an MTU to observe the fragmentation process, calculate fragment offsets, understand the More Fragments (MF) flag, and visualize the resulting fragments.
+
+## 🎯 Objectives
+
+- Understand the concept of IPv4 fragmentation.
+- Demonstrate the role of the Maximum Transmission Unit (MTU).
+- Calculate fragment payload sizes and total sizes.
+- Understand fragment offsets and the More Fragments (MF) flag.
+- Visualize how a large IPv4 packet is divided into smaller fragments.
 
 ## ✨ Features
 
-- Enter the original IPv4 packet size and MTU.
-- Automatically calculate IPv4 packet fragmentation.
-- Display individual fragment payload and total sizes.
-- Calculate fragment offsets using 8-byte units.
-- Display the More Fragments (MF) flag.
-- Visualize packet fragmentation through a diagram and results table.
-- Validate user inputs.
-- Responsive, browser-based interface.
+- **Interactive Simulation:** Enter packet sizes and MTU values.
+- **Automatic Fragmentation:** Calculate the fragments required for a packet.
+- **Fragment Details:** Display fragment payload sizes, header sizes, total sizes, offsets, and MF flags.
+- **Visual Representation:** Observe how the original packet is divided into fragments.
+- **Educational Calculations:** Understand the mathematical rules behind fragmentation.
+- **Input Validation:** Handle invalid packet sizes and MTU values.
 
 ## 🛠️ Technologies Used
 
-- **HTML5:** Structure of the application.
-- **CSS3:** Styling and layout.
-- **JavaScript:** Fragmentation calculations and interactive functionality.
+- HTML5
+- CSS3
+- JavaScript
 
-## ⚙️ How to Run Locally
+## 🧠 Key Networking Concepts
 
-1. Download or clone this repository.
-2. Keep `index.html`, `style.css`, and `script.js` in the same directory.
-3. Open `index.html` in a web browser.
+| Concept | Description |
+|---|---|
+| IPv4 | Internet Protocol version 4, used to address and route packets. |
+| MTU | Maximum Transmission Unit, the maximum packet size supported by a network link. |
+| IPv4 Header | The header containing information required to process and route an IPv4 packet. |
+| Fragment Offset | Indicates the position of a fragment's payload within the original packet, in units of 8 bytes. |
+| MF Flag | The More Fragments flag indicates whether additional fragments follow. |
+| Payload | The data carried by the IPv4 packet, excluding its header. |
 
-No backend server or additional dependencies are required.
+## 🧮 Example Simulation
 
-## 🧮 Example
+Consider the following input:
 
-**Input:**
-- Original IPv4 packet size: 4000 bytes
-- MTU: 1500 bytes
-- IPv4 header size: 20 bytes
+- **Original IPv4 Packet Size:** 4000 bytes
+- **MTU:** 1500 bytes
+- **IPv4 Header Size:** 20 bytes
 
-**Expected Output:**
+The original payload is:
 
-| Fragment | Payload Size | Total Size | Offset | MF |
+`4000 - 20 = 3980 bytes`
+
+The maximum payload size for each non-final fragment is:
+
+`floor((1500 - 20) / 8) × 8 = 1480 bytes`
+
+The resulting fragments are:
+
+| Fragment | Payload Size | Total Size | Fragment Offset | MF Flag |
 |---|---:|---:|---:|---:|
-| 1 | 1480 B | 1500 B | 0 | 1 |
-| 2 | 1480 B | 1500 B | 185 | 1 |
-| 3 | 1020 B | 1040 B | 370 | 0 |
+| 1 | 1480 bytes | 1500 bytes | 0 | 1 |
+| 2 | 1480 bytes | 1500 bytes | 185 | 1 |
+| 3 | 1020 bytes | 1040 bytes | 370 | 0 |
 
-## 📚 Concepts Demonstrated
+The total transmitted size is **4040 bytes**, including the IPv4 header of each fragment.
 
-- IPv4 packet fragmentation
-- Maximum Transmission Unit (MTU)
-- IPv4 header and payload
-- Fragment Offset
-- More Fragments (MF) flag
-- 8-byte fragment alignment
+## 🚀 How to Use
 
-## 🎯 Objective
-
-To make IPv4 packet fragmentation easier to understand through interactive calculations and visual demonstrations.
-
-## ⚠️ Disclaimer
-
-This is an educational simulator. It calculates and visualizes fragmentation but does not transmit real network packets.
-
-## 👨‍💻 Contributors
-
-- Add team members' names here.
-
-## 📄 License
-
-This project was developed for educational purposes as part of a Computer Networks mini-project.
+1. Open the [IPv4 Fragmentation Simulator](https://dynamitepranay.github.io/ipv4-fragmentation-simulator/).
+2. Enter the original IPv4 packet size in bytes.
+3. Enter the MTU value in bytes.
+4. Click the simulation button.
+5.
